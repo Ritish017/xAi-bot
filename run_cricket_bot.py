@@ -58,11 +58,19 @@ def execute_tweet_bot():
     try:
         result = app.invoke(bot_input)
         
+        # Check for errors
         if result.get('error'):
-            print(f"❌ Bot Error: {result['error']}")
+            print(f"\n❌ Bot Error: {result['error']}")
             sys.exit(1)
         
-        tweet_content = result.get('final_tweet', '')
+        # Check if tweet was generated
+        tweet_content = result.get('final_tweet', '').strip()
+        
+        if not tweet_content:
+            print(f"\n❌ No tweet was generated!")
+            print(f"Content Idea: {result.get('content_idea', 'None')[:200]}...")
+            sys.exit(1)
+        
         tweet_length = len(tweet_content)
         
         print(f"\n{separator}")
