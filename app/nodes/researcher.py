@@ -26,7 +26,14 @@ def researcher(state: BotState) -> dict:
         search = TavilySearchResults(max_results=Config.MAX_SEARCH_RESULTS)
         query = f"latest trending news and updates for {niche} February 2026"
         search_results = search.invoke(query)
-        print(f"✅ Tavily search returned {len(search_results) if search_results else 0} results")
+        
+        # Count results properly
+        if isinstance(search_results, list):
+            result_count = len(search_results)
+        else:
+            result_count = 1 if search_results else 0
+        
+        print(f"✅ Tavily search returned {result_count} results (max: {Config.MAX_SEARCH_RESULTS})")
     except Exception as e:
         print(f"⚠️ Tavily search failed: {str(e)}")
         search_results = None
