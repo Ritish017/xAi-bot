@@ -20,6 +20,7 @@ def researcher(state: BotState) -> dict:
     """
     niche = state['niche']
     search_results = None
+    has_valid_search = False
     
     # Try Tavily search first
     try:
@@ -27,16 +28,30 @@ def researcher(state: BotState) -> dict:
         query = f"latest trending news and updates for {niche} February 2026"
         search_results = search.invoke(query)
         
-        # Count results properly
-        if isinstance(search_results, list):
-            result_count = len(search_results)
+        # Validate search results - check for errors in response
+        if isinstance(search_results, list) and len(search_results) > 0:
+            # Check if results contain actual content, not errors
+            first_result = str(search_results[0]) if search_results else ""
+            if "error" in first_result.lower() or "unauthorized" in first_result.lower() or "401" in first_result:
+                print(f"⚠️ Tavily returned error response, falling back to AI")
+                has_valid_search = False
+            else:
+                has_valid_search = True
+                print(f"✅ Tavily search returned {len(search_results)} valid results")
+        elif isinstance(search_results, str):
+            if "error" in search_results.lower() or "unauthorized" in search_results.lower():
+                print(f"⚠️ Tavily returned error: {search_results[:100]}")
+                has_valid_search = False
+            else:
+                has_valid_search = True
+                print(f"✅ Tavily search returned text result")
         else:
-            result_count = 1 if search_results else 0
-        
-        print(f"✅ Tavily search returned {result_count} results (max: {Config.MAX_SEARCH_RESULTS})")
+            print(f"⚠️ Tavily returned empty or invalid results")
+            has_valid_search = False
+            
     except Exception as e:
         print(f"⚠️ Tavily search failed: {str(e)}")
-        search_results = None
+        has_valid_search = False
 
     # Generate content with AI
     try:
@@ -45,7 +60,7 @@ def researcher(state: BotState) -> dict:
             temperature=Config.LLM_TEMPERATURE_RESEARCH
         )
 
-        if search_results:
+        if has_valid_search and search_results:
             # Use search results - extract specific facts
             prompt = f"""Analyze these search results about {niche}:
 
