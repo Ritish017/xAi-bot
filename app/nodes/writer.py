@@ -21,21 +21,43 @@ def tweet_writer(state: BotState) -> dict:
         temperature=Config.LLM_TEMPERATURE_CREATIVE
     )
     
-    prompt = (
-        f"Context: {state['content_idea']}\n\n"
-        f"Think of yourself as a top-tier social media marketer specializing in "
-        f"crafting viral tweets for the {state['niche']} community.\n"
-        f"Task: Write a viral X tweet for the {state['niche']} community.\n"
-        "Guidelines:\n"
-        "1. Start with a massive HOOK (Question, bold statement, or 'Breaking').\n"
-        f"2. Keep it under {Config.MAX_TWEET_LENGTH} chars.\n"
-        "3. Use 2-3 trending hashtags.\n"
-        "4. Include emojis and a 'Call to Action' (e.g., 'What do you think?').\n"
-        "5. Tone: High energy/Opinionated."
-    )
+    prompt = f"""You are a cricket journalist writing viral tweets about {state['niche']}.
+
+RESEARCH DATA (use this information):
+{state['content_idea']}
+
+STRICT RULES:
+1. ONLY use REAL names, scores, and facts from the research data above
+2. NEVER use placeholders like [Player Name] or [Score] - use ACTUAL data
+3. If research mentions a player, USE THEIR REAL NAME
+4. If research mentions a score, USE THE ACTUAL SCORE
+5. If you don't have specific data, focus on what you DO have
+
+TWEET FORMAT:
+- Start with a hook: 🚨 BREAKING, 🔥 or a bold question
+- Include 1-2 specific facts (player names, scores, match details)
+- Add 2-3 hashtags: #CricketWorldCup2026 #T20WorldCup
+- End with engagement question
+- MUST be under {Config.MAX_TWEET_LENGTH} characters
+- Use emojis sparingly (2-3 max)
+
+Write ONE tweet now. No explanations, just the tweet text:"""
     
     try:
         response = llm.invoke(prompt)
-        return {"final_tweet": response.content}
+        tweet = response.content.strip()
+        
+        # Remove any markdown formatting that might be in the response
+        tweet = tweet.replace('**', '').replace('*', '')
+        
+        # Remove quotes if the AI wrapped the tweet in them
+        if tweet.startswith('"') and tweet.endswith('"'):
+            tweet = tweet[1:-1]
+        if tweet.startswith("'") and tweet.endswith("'"):
+            tweet = tweet[1:-1]
+            
+        print(f"   ✅ Generated tweet: {len(tweet)} chars")
+        return {"final_tweet": tweet}
     except Exception as e:
+        print(f"   ❌ Tweet generation failed: {str(e)}")
         return {"final_tweet": f"Tweet generation failed: {str(e)}"}

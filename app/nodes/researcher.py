@@ -46,22 +46,31 @@ def researcher(state: BotState) -> dict:
         )
 
         if search_results:
-            # Use search results
-            prompt = (
-                f"Based on these search results: {search_results}, "
-                f"identify the most controversial or exciting trending story about {niche}. "
-                "Focus on things that trigger high engagement (debates, breaking news, or records). "
-                "Also include some statistical data to make the tweet more informative."
-            )
+            # Use search results - extract specific facts
+            prompt = f"""Analyze these search results about {niche}:
+
+{search_results}
+
+Extract and summarize the KEY FACTS for a tweet:
+1. PLAYER NAMES mentioned (full names)
+2. SCORES or STATISTICS (exact numbers)
+3. MATCH DETAILS (teams, venue, date)
+4. Any CONTROVERSY or BREAKING NEWS
+
+Format your response as bullet points with SPECIFIC data only.
+Do NOT use placeholders like [Player] - only include real data you found.
+If a piece of information is not in the search results, skip it."""
         else:
             # Fallback: Generate content without search
-            prompt = (
-                f"You are a cricket expert. Generate an exciting, trending insight about {niche}. "
-                "Think about: current match updates, player performances, team rankings, "
-                "controversial decisions, record-breaking moments, or upcoming key matches. "
-                "Make it sound like breaking news that would engage cricket fans. "
-                "Include realistic statistics or facts."
-            )
+            prompt = f"""You are a cricket journalist covering {niche}.
+
+Generate a realistic, specific cricket update that could be tweeted.
+Include:
+- Real player names from current teams (India, Australia, England, etc.)
+- Realistic match scores or statistics
+- Current tournament context
+
+Make it sound like breaking news. Be specific with names and numbers."""
             print("📝 Using AI-generated content (no search results)")
         
         response = llm.invoke(prompt)
