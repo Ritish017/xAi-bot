@@ -41,6 +41,13 @@ jobs:
         run: |
           uv pip install -e . --system
 
+      - name: Verify environment variables
+        run: |
+          echo "Checking environment variables..."
+          echo "TAVILY_API_KEY is set: ${{ secrets.TAVILY_API_KEY != '' }}"
+          echo "GEMINI_API_KEY is set: ${{ secrets.GEMINI_API_KEY != '' }}"
+          echo "X_API_KEY is set: ${{ secrets.X_API_KEY != '' }}"
+
       - name: Run AI & Tech News Tweet Manager
         env:
           X_API_KEY: ${{ secrets.X_API_KEY }}
