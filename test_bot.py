@@ -1,19 +1,19 @@
 """
-Test the AI Tweet Bot without publishing to X (Twitter).
+Test the AI & Tech News Tweet Manager without publishing to X (Twitter).
 """
 from app.main import app_test
 
 
-def test_bot(niche: str):
+def test_bot(niche: str = "AI and Tech"):
     """
-    Test the AI Tweet Bot without publishing to X.
+    Test the AI & Tech News Tweet Manager without publishing to X.
     
     Args:
-        niche: The topic/niche for tweet generation
+        niche: The topic/niche for tweet generation (default: AI and Tech)
     """
     inputs = {"niche": niche, "content_idea": "", "final_tweet": "", "error": ""}
     
-    print("🧪 Testing AI Tweet Bot (No Publishing)...")
+    print("🧪 Testing AI & Tech News Tweet Manager (No Publishing)...")
     print(f"📌 Niche: {inputs['niche']}\n")
     
     result = app_test.invoke(inputs)
@@ -31,5 +31,5 @@ def test_bot(niche: str):
 
 
 if __name__ == "__main__":
-    # Test with your desired niche
-    test_bot("AI Agents in 2026")
+    # Test with AI and Tech news niche
+    test_bot("AI and Tech")

@@ -1,5 +1,5 @@
 """
-Workflow definition for the AI Tweet Bot using LangGraph.
+Workflow definition for the AI & Tech News Tweet Manager using LangGraph.
 """
 from langgraph.graph import StateGraph, START, END
 from app.models import BotState

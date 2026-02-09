@@ -1,6 +1,16 @@
-# 🤖 AI Tweet Bot
+# 🤖 AI & Tech News Tweet Manager
 
-An intelligent Twitter/X bot powered by LangGraph, Google Gemini AI, and Tavily search that generates and publishes viral tweets automatically.
+An intelligent Twitter/X automation bot powered by **LangGraph**, **Google Gemini AI**, and **Tavily Search** that automatically researches the latest AI and Tech news globally and publishes viral tweets to X (Twitter).
+
+## 🌟 What It Does
+
+This bot automatically:
+1. 🔍 **Searches** for the latest breaking AI & Tech news globally
+2. 🧠 **Analyzes** the most exciting stories using AI
+3. ✍️ **Generates** engaging, viral-worthy tweets
+4. 🐦 **Publishes** directly to X/Twitter
+
+Perfect for tech enthusiasts, AI developers, and content creators who want to stay on top of AI news and share it with their audience!
 
 ## 📁 Project Structure
 
@@ -12,7 +22,7 @@ xAi-bot/
 │   ├── workflow.py        # LangGraph workflow definition
 │   ├── main.py            # Main app instances
 │   └── nodes/
-│       ├── researcher.py  # Research node (Tavily search)
+│       ├── researcher.py  # AI & Tech news research node
 │       ├── writer.py      # Tweet writing node
 │       └── publisher.py   # X/Twitter publishing node
 ├── main.py                # CLI entry point
@@ -24,17 +34,17 @@ xAi-bot/
 
 ## 🚀 Features
 
-- **AI-Powered Research**: Uses Tavily search to find trending topics
-- **Viral Tweet Generation**: Creates engaging, high-energy tweets with hooks and CTAs
-- **Automated Publishing**: Posts directly to X/Twitter
-- **LangGraph Workflow**: Structured multi-step AI agent workflow
-- **Test Mode**: Test without publishing to X
-- **Conditional Logic**: Smart validation and error handling
+- **🔍 AI-Powered Research**: Uses Tavily search to find the latest AI breakthroughs, model releases, tech announcements, and industry news
+- **✨ Viral Tweet Generation**: Creates engaging, high-energy tweets with hooks, emojis, and relevant hashtags
+- **📤 Automated Publishing**: Posts directly to X/Twitter with one command
+- **🔄 LangGraph Workflow**: Structured multi-step AI agent workflow
+- **🧪 Test Mode**: Preview tweets without publishing
+- **⚡ Conditional Logic**: Smart validation and error handling
 
 ## 📋 Prerequisites
 
 - Python 3.13+
-- X (Twitter) API credentials
+- X (Twitter) API credentials (Developer Account)
 - Google Gemini API key
 - Tavily API key
 
@@ -42,6 +52,7 @@ xAi-bot/
 
 1. **Clone the repository**
    ```bash
+   git clone https://github.com/yourusername/xAi-bot.git
    cd xAi-bot
    ```
 
@@ -74,43 +85,53 @@ xAi-bot/
 python main.py
 ```
 
-### Direct Mode (Test)
+### Direct Mode - Test (No Publishing)
 ```bash
-python main.py --test "AI Agents in 2026"
+python main.py --test "AI and Tech"
 ```
 
-### Direct Mode (Live Publishing)
+### Direct Mode - Live Publishing
 ```bash
-python main.py "AI Agents in 2026"
+python main.py "AI and Tech"
 ```
 
 ### Using Scripts Directly
 
-**Test mode (no publishing):**
+**Test mode (preview tweet, no publishing):**
 ```bash
 python test_bot.py
 ```
 
-**Live mode (with publishing):**
+**Live mode (publish to X/Twitter):**
 ```bash
 python run_bot.py
 ```
 
-## 🔄 Workflow
+## 🔄 LangGraph Workflow
 
-The bot follows this LangGraph workflow:
+The bot follows this intelligent LangGraph workflow:
 
-1. **Researcher Node**
-   - Searches Tavily for trending topics
-   - Generates content ideas with AI
-   - Validates research results
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Researcher │ ──▶ │ Tweet Writer │ ──▶ │  Publisher  │
+│    Node     │     │     Node     │     │    Node     │
+└─────────────┘     └──────────────┘     └─────────────┘
+      │                                         │
+      │         (Research Validation)           │
+      └─────────────────────────────────────────┘
+```
 
-2. **Writer Node**
+1. **🔍 Researcher Node**
+   - Searches Tavily for latest AI & Tech news
+   - Finds AI breakthroughs, model releases, tech announcements
+   - Extracts key statistics and company names
+
+2. **✍️ Writer Node**
    - Crafts viral tweets (< 280 chars)
-   - Adds hooks, emojis, and hashtags
-   - Optimized for engagement
+   - Adds compelling hooks and CTAs
+   - Includes relevant hashtags (#AI #TechNews #MachineLearning)
 
-3. **Publisher Node** *(Optional in test mode)*
+3. **📤 Publisher Node** *(Optional in test mode)*
    - Posts tweet to X/Twitter
    - Returns confirmation
 
@@ -118,55 +139,80 @@ The bot follows this LangGraph workflow:
 
 Edit `app/config.py` to customize:
 
-- `LLM_MODEL`: AI model to use
-- `LLM_TEMPERATURE_RESEARCH`: Temperature for research (0 = deterministic)
-- `LLM_TEMPERATURE_CREATIVE`: Temperature for writing (0.7 = creative)
-- `MAX_SEARCH_RESULTS`: Number of search results to analyze
-- `MAX_TWEET_LENGTH`: Maximum tweet length
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `LLM_MODEL` | AI model to use | `gemini-2.5-flash` |
+| `LLM_TEMPERATURE_RESEARCH` | Temperature for research | `0` (deterministic) |
+| `LLM_TEMPERATURE_CREATIVE` | Temperature for writing | `0.7` (creative) |
+| `MAX_SEARCH_RESULTS` | Number of search results | `3` |
+| `MAX_TWEET_LENGTH` | Maximum tweet length | `280` |
 
 ## 🧪 Testing
 
 Test the bot without publishing:
 
 ```bash
-uv run python test_bot.py
+python test_bot.py
+```
+
+Or with a specific topic:
+
+```bash
+python main.py --test "OpenAI GPT-5"
 ```
 
 ## 📝 Example Output
 
 ```
-🧪 Testing AI Tweet Bot (No Publishing)...
-📌 Niche: AI Agents in 2026
+🧪 Testing AI & Tech News Tweet Manager (No Publishing)...
+📌 Niche: AI and Tech
 
 ✅ Test completed!
 
 📝 Content Idea:
-Breaking: AI Agent 'Apex' achieves 38% profit surge...
+Breaking: OpenAI announces GPT-5 with revolutionary reasoning capabilities...
 
 🐦 Final Tweet:
-🚨 BREAKING: AI 'Apex' just CRUSHED Q3 with a 38% profit surge! 
-But the catch? 🤯 22% workforce reduction. 
-Is this peak innovation or disaster? Your take! 👇 
-#AIAgents #FutureOfWork #AIethics
+🚨 BREAKING: OpenAI just dropped GPT-5 and it's INSANE! 
 
-📊 Tweet Length: 208 characters
+New reasoning capabilities that outperform humans in complex tasks 🤯
+
+This changes everything for AI development.
+
+What do you think - are we ready for this? 👇
+
+#AI #OpenAI #GPT5 #TechNews
+
+📊 Tweet Length: 245 characters
 ```
+
+## 🛠️ Tech Stack
+
+- **LangGraph** - Workflow orchestration for AI agents
+- **LangChain** - LLM framework
+- **Google Gemini AI** - Content generation
+- **Tavily Search** - Real-time news research
+- **Tweepy** - X/Twitter API integration
+- **Python 3.13+** - Modern Python
 
 ## 🛡️ Error Handling
 
-- Research validation ensures quality content
-- Graceful error messages
-- Test mode for safe development
-- SSL error handling for Windows
+- ✅ Research validation ensures quality content
+- ✅ Graceful error messages
+- ✅ Test mode for safe development
+- ✅ SSL error handling for Windows
 
 ## 📦 Dependencies
 
-- `langchain` - LLM framework
-- `langgraph` - Workflow orchestration
-- `langchain-google-genai` - Google Gemini integration
-- `langchain-community` - Tavily search
-- `tweepy` - X/Twitter API
-- `python-dotenv` - Environment management
+```
+langchain
+langgraph
+langchain-google-genai
+langchain-community
+tweepy
+python-dotenv
+tavily-python
+```
 
 ## 🤝 Contributing
 
@@ -178,4 +224,6 @@ MIT License
 
 ---
 
-Made with ❤️ using LangGraph and AI
+Made with ❤️ using LangGraph, Google Gemini AI, and Tavily Search
+
+**🔗 Connect with me on LinkedIn to see this bot in action!**

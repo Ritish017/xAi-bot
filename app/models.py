@@ -1,5 +1,5 @@
 """
-Data models for the AI Tweet Bot.
+Data models for the AI & Tech News Tweet Manager.
 """
 from typing import TypedDict
 

@@ -1,5 +1,5 @@
 """
-Configuration module for the AI Tweet Bot.
+Configuration module for the AI & Tech News Tweet Manager.
 Loads environment variables and defines constants.
 """
 import os

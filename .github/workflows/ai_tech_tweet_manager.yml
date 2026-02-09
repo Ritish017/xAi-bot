@@ -1,0 +1,63 @@
+name: AI & Tech News Tweet Manager
+
+on:
+  # Run every 3 hours to post latest AI & Tech news
+  schedule:
+    - cron: '0 */3 * * *'  # Every 3 hours
+  
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      niche:
+        description: 'Topic to tweet about'
+        required: false
+        default: 'AI and Tech'
+      test_mode:
+        description: 'Run in test mode (no publishing)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+jobs:
+  post-ai-tech-tweet:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install dependencies
+        run: |
+          uv pip install -e . --system
+
+      - name: Run AI & Tech News Tweet Manager
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: |
+          if [ "${{ github.event.inputs.test_mode }}" == "true" ]; then
+            python main.py --test "${{ github.event.inputs.niche || 'AI and Tech' }}"
+          else
+            python main.py "${{ github.event.inputs.niche || 'AI and Tech' }}"
+          fi
+
+      - name: Log completion
+        run: |
+          echo "✅ AI & Tech News Tweet Manager completed successfully!"
+          echo "⏰ Timestamp: $(date)"
