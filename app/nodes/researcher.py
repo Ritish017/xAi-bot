@@ -1,7 +1,7 @@
 """
 Researcher node: Searches for latest AI and Tech news globally.
 """
-from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_tavily import TavilySearchResults
 from langchain_google_genai import ChatGoogleGenerativeAI
 from app.models import BotState
 from app.config import Config
@@ -17,7 +17,11 @@ def researcher(state: BotState) -> dict:
     Returns:
         Updated state with content_idea and error fields
     """
-    search = TavilySearchResults(max_results=Config.MAX_SEARCH_RESULTS)
+    search = TavilySearchResults(
+        max_results=Config.MAX_SEARCH_RESULTS,
+        include_raw_content=True,
+        include_images=False
+    )
     query = f"latest breaking {state['niche']} news today artificial intelligence machine learning tech startups"
 
     try:
