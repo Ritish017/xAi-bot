@@ -1,7 +1,7 @@
 """
 Researcher node: Searches for latest AI and Tech news globally.
 """
-from langchain_tavily import TavilySearchResults
+from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_google_genai import ChatGoogleGenerativeAI
 from app.models import BotState
 from app.config import Config
