@@ -44,6 +44,11 @@ Thumbs.db
 # Logs
 *.log
 
+# Runtime data / Bot state (do not commit)
+tweet_history.json
+tweet_log.csv
+xai_tweet_*.png
+
 # LangGraph API cache
 .langgraph_api/
 *.pckl

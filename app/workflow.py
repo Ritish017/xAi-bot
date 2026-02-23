@@ -1,9 +1,10 @@
 """
 Workflow definition for the AI & Tech News Tweet Manager using LangGraph.
+Includes: Research → Write → Generate Image → Publish
 """
 from langgraph.graph import StateGraph, START, END
 from app.models import BotState
-from app.nodes import researcher, tweet_writer, publisher
+from app.nodes import researcher, tweet_writer, image_generator, publisher
 
 
 def validate_research(state: BotState) -> str:
@@ -30,6 +31,8 @@ def create_workflow(include_publisher: bool = True):
     """
     Creates the LangGraph workflow for the tweet bot.
     
+    Flow: START → researcher → (validate) → tweet_writer → image_generator → publisher → END
+    
     Args:
         include_publisher: Whether to include the publisher node (set False for testing)
         
@@ -41,6 +44,7 @@ def create_workflow(include_publisher: bool = True):
     # Add nodes
     workflow.add_node("researcher", researcher)
     workflow.add_node("tweet_writer", tweet_writer)
+    workflow.add_node("image_generator", image_generator)
     
     if include_publisher:
         workflow.add_node("publisher", publisher)
@@ -56,10 +60,13 @@ def create_workflow(include_publisher: bool = True):
         }
     )
     
+    # Writer → Image Generator → Publisher/END
+    workflow.add_edge("tweet_writer", "image_generator")
+    
     if include_publisher:
-        workflow.add_edge("tweet_writer", "publisher")
+        workflow.add_edge("image_generator", "publisher")
         workflow.add_edge("publisher", END)
     else:
-        workflow.add_edge("tweet_writer", END)
+        workflow.add_edge("image_generator", END)
     
     return workflow.compile()

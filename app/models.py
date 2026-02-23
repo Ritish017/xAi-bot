@@ -9,4 +9,8 @@ class BotState(TypedDict):
     niche: str
     content_idea: str
     final_tweet: str
+    hook_style: str
+    image_prompt: str
+    image_url: str
+    image_path: str   # Local temp file path for generated image
     error: str

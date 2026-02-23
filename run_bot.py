@@ -11,7 +11,16 @@ def run_bot(niche: str = "AI and Tech"):
     Args:
         niche: The topic/niche for tweet generation (default: AI and Tech)
     """
-    inputs = {"niche": niche, "content_idea": "", "final_tweet": "", "error": ""}
+    inputs = {
+        "niche": niche,
+        "content_idea": "",
+        "final_tweet": "",
+        "hook_style": "",
+        "image_prompt": "",
+        "image_url": "",
+        "image_path": "",
+        "error": ""
+    }
     
     print("🤖 Running AI & Tech News Tweet Manager...")
     print(f"📌 Niche: {inputs['niche']}\n")
@@ -25,11 +34,11 @@ def run_bot(niche: str = "AI and Tech"):
     print("\n✅ Tweet published successfully!")
     print(f"\n📝 Content Idea:\n{result.get('content_idea', 'N/A')}\n")
     print(f"🐦 Final Tweet:\n{result.get('final_tweet', 'N/A')}\n")
+    print(f"🎯 Hook Style: {result.get('hook_style', 'N/A')}")
     print(f"📊 Tweet Length: {len(result.get('final_tweet', ''))} characters")
     
     return result
 
 
 if __name__ == "__main__":
-    # Run with AI and Tech news niche
     run_bot("AI and Tech")

@@ -1,15 +1,18 @@
 """
 Researcher node: Searches for latest AI and Tech news globally.
+Includes deduplication to avoid repeating recent topics.
 """
 from langchain_tavily import TavilySearch
 from langchain_google_genai import ChatGoogleGenerativeAI
 from app.models import BotState
 from app.config import Config
+from app.nodes.dedup import get_recent_topics
 
 
 def researcher(state: BotState) -> dict:
     """
     Research node: Searches for latest AI and Tech news globally.
+    Uses deduplication to ensure fresh content every time.
     
     Args:
         state: Current bot state containing the niche
@@ -20,12 +23,12 @@ def researcher(state: BotState) -> dict:
     # Initialize Tavily Search with proper parameters
     search = TavilySearch(
         max_results=Config.MAX_SEARCH_RESULTS,
-        topic="news",  # Use "news" topic for latest news
+        topic="news",
         include_answer=False,
         include_raw_content=True,
         include_images=False,
-        search_depth="advanced",  # Use advanced for better results
-        time_range="day"  # Get news from the last day
+        search_depth="advanced",
+        time_range="day"
     )
     
     query = f"latest breaking {state['niche']} news today artificial intelligence machine learning tech startups"
@@ -40,17 +43,27 @@ def researcher(state: BotState) -> dict:
                 "error": "Search returned no results"
             }
         
+        # Get recent topics to avoid duplication
+        recent_topics = get_recent_topics(limit=20)
+        
         llm = ChatGoogleGenerativeAI(
             model=Config.LLM_MODEL,
-            temperature=Config.LLM_TEMPERATURE_RESEARCH
+            temperature=Config.LLM_TEMPERATURE_RESEARCH,
+            google_api_key=Config.GEMINI_API_KEY
         )
 
         prompt = (
             f"Based on these search results: {search_results}, "
-            f"identify the most exciting or breaking news about {state['niche']}. "
-            "Focus on: AI breakthroughs, new model releases, tech company announcements, "
-            "funding rounds, product launches, or industry-changing developments. "
-            "Include relevant statistics, company names, and key details to make the tweet informative and engaging."
+            f"identify the single most ground-breaking, viral-worthy, and mind-blowing news about {state['niche']}. "
+            "Focus strictly on: Massive AI breakthroughs, disruptive new model releases, shocking tech company announcements, "
+            "or paradigm-shifting developments. "
+            "Extract the most jaw-dropping facts, relevant statistics, company names, and key details. "
+            "Provide a highly engaging summary that emphasizes the 'wow' factor and why people should care right now.\n\n"
+            "CRITICAL RULES:\n"
+            "1. Do NOT include any URLs, links, or website addresses in your response.\n"
+            "2. Do NOT mention source websites or article URLs.\n"
+            "3. Focus purely on the NEWS CONTENT — facts, stats, and impact.\n\n"
+            f"AVOID these recently covered topics (pick something DIFFERENT):\n{recent_topics}"
         )
         
         response = llm.invoke(prompt)
